@@ -39,7 +39,7 @@ public class SokoBot
     }
 
     //Initialize reachable tiles
-    this.reach = new Reach(player, 0, new ArrayList<ReachPos>());
+    this.reach = new Reach(player, 0, new Tile[height][width]);
 
     //Add goal positions
     for(int i = 0; i < height; i++)

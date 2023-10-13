@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="79e369c2-80f9-4db8-88d9-2c0acbd45186" name="Changes" comment="Begin push-optimal refactoring">
-      <change afterPath="$PROJECT_DIR$/src/solver/Pos.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/solver/Push.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/solver/Reach.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/solver/ReachPos.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/solver/State.java" afterDir="false" />
+    <list default="true" id="79e369c2-80f9-4db8-88d9-2c0acbd45186" name="Changes" comment="Add possible records needed for push-optimal solution">
+      <change afterPath="$PROJECT_DIR$/src/solver/Tile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/solver/Reach.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/solver/Reach.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/solver/ReachPos.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/solver/SokoBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/solver/SokoBot.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,7 +56,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1697162793645</updated>
-      <workItem from="1697162794643" duration="11218000" />
+      <workItem from="1697162794643" duration="12944000" />
     </task>
     <task id="LOCAL-00001" summary="Begin push-optimal refactoring">
       <option name="closed" value="true" />
@@ -68,7 +66,15 @@
       <option name="project" value="LOCAL" />
       <updated>1697163179414</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Add possible records needed for push-optimal solution">
+      <option name="closed" value="true" />
+      <created>1697178218987</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1697178218987</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -76,6 +82,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Begin push-optimal refactoring" />
-    <option name="LAST_COMMIT_MESSAGE" value="Begin push-optimal refactoring" />
+    <MESSAGE value="Add possible records needed for push-optimal solution" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add possible records needed for push-optimal solution" />
   </component>
 </project>
