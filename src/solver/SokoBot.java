@@ -240,10 +240,10 @@ public class SokoBot
 
     Comparator<Path> posComparator = Comparator.comparing(Path::heuristic);
     PriorityQueue<Path> queue = new PriorityQueue<Path>(posComparator);
-    String path = "";
 
     int heuristic = Math.abs(player.x() - dest.x()) + Math.abs(player.y() - dest.y());
-    Path start = new Path(player, heuristic, path);
+    Path start = new Path(player, heuristic, "");
+    HashSet<Path> hashSet = new HashSet<>();
     int[][] tiles = reach.getTiles();
     int stamp = reach.getStamp();
 
@@ -252,7 +252,8 @@ public class SokoBot
     while (!queue.isEmpty())
     {
       Path current = queue.poll();
-      if (current.heuristic() == 0)
+
+      if ((Math.abs(current.pos().x() - dest.x()) + Math.abs(current.pos().y() - dest.y())) == 0)
       {
         return current.path();
       }
@@ -261,31 +262,41 @@ public class SokoBot
 
       if (tiles[curPos.y()-1][curPos.x()] == stamp)
       {
-         Pos up = new Pos(curPos.x(),curPos.y()-1);
-         int h = Math.abs(up.x() - dest.x()) + Math.abs(up.y() - dest.y());
-         queue.add(new Path(up, h, current.path() + "u"));
+         Pos posup = new Pos(curPos.x(),curPos.y()-1);
+         int h = Math.abs(posup.x() - dest.x()) + Math.abs(posup.y() - dest.y());
+         Path up = new Path(posup, h, current.path() + "u");
+         if (!hashSet.contains(up))
+          queue.add(up);
       }
 
       if (tiles[curPos.y()+1][curPos.x()] == stamp)
       {
-        Pos down = new Pos(curPos.x(),curPos.y()+1);
-        int h = Math.abs(down.x() - dest.x()) + Math.abs(down.y() - dest.y());
-        queue.add(new Path(down, h, current.path() + "d"));
+        Pos posdown = new Pos(curPos.x(),curPos.y()+1);
+        int h = Math.abs(posdown.x() - dest.x()) + Math.abs(posdown.y() - dest.y());
+        Path down = new Path(posdown, h, current.path() + "d");
+        if (!hashSet.contains(down))
+          queue.add(down);
       }
 
       if (tiles[curPos.y()][curPos.x()+1] == stamp)
       {
-        Pos right = new Pos(curPos.x()+1,curPos.y());
-        int h = Math.abs(right.x() - dest.x()) + Math.abs(right.y() - dest.y());
-        queue.add(new Path(right, h, current.path() + "r"));
+        Pos posright = new Pos(curPos.x()+1,curPos.y());
+        int h = Math.abs(posright.x() - dest.x()) + Math.abs(posright.y() - dest.y());
+        Path right = new Path(posright, h, current.path() + "r");
+        if (!hashSet.contains(right))
+          queue.add(right);
       }
 
       if (tiles[curPos.y()][curPos.x()-1] == stamp)
       {
-        Pos left = new Pos(curPos.x()-1,curPos.y());
-        int h = Math.abs(left.x() - dest.x()) + Math.abs(left.y() - dest.y());
-        queue.add(new Path(left, h, current.path() + "l"));
+        Pos posleft = new Pos(curPos.x()-1,curPos.y());
+        int h = Math.abs(posleft.x() - dest.x()) + Math.abs(posleft.y() - dest.y());
+        Path left = new Path(posleft, h, current.path() + "l");
+        if (!hashSet.contains(left))
+          queue.add(left);
       }
+
+      hashSet.add(current);
     }
 
     throw new RuntimeException("Wasn't able to find the path!");
@@ -300,130 +311,162 @@ public class SokoBot
     HashSet<Long> visited = new HashSet<Long>();
     states.offer(start);
 
-    while (!states.isEmpty())
-    {
-
-        current = states.poll();
-        char[][] curItemsData = current.getItemsData();
-        Pos curPlayer = current.getPlayer();
-        calculateReach(curPlayer, curItemsData);
-
-        if (isSolved(current))
+    calculateReach(player, itemsData);
+        for (int i = 0; i < height; i++)
         {
-          System.out.println("We are done!");
-          return current.getPath();
-        }
-        else
-        {
-          for (int i = 0; i < height; i++)
+          for (int j = 0; j < width; j++)
           {
-            for (int j = 0; j < width; j++)
-            {
-              if (curItemsData[i][j] == '$') //check if box
-              {
-                if (reach.getTiles()[i][j] == reach.getStamp() + 1) //check if box is reachable
-                {
-
-                  //.
-                  //$
-                  //@ go up
-                  if(reach.getTiles()[i+1][j] == reach.getStamp() && curItemsData[i-1][j] == ' ')
-                  {
-                    char[][] newItemsData = Arrays.stream(curItemsData).map(char[]::clone).toArray(char[][]::new); //copy current items data
-                    newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
-                    newItemsData[i][j] = '@'; //replace with player
-                    newItemsData[i - 1][j] = '$'; //move box
-
-                    long newHash = calculateHash(newItemsData);
-                    if (!visited.contains(newHash))
-                    {
-                      State up = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), calculatePath(curPlayer, new Pos(j,i+1)) + "u");
-                      states.add(up);
-                    }
-                    else
-                    {
-                      System.out.println("State already visited!");
-                    }
-
-                  }
-
-                  //@
-                  //$
-                  //. go down
-                  if(reach.getTiles()[i-1][j] == reach.getStamp() && curItemsData[i+1][j] == ' ')
-                  {
-                    char[][] newItemsData = Arrays.stream(curItemsData).map(char[]::clone).toArray(char[][]::new); //copy current items data
-                    newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
-                    newItemsData[i][j] = '@';
-                    newItemsData[i+1][j] = '$';
-
-                    long newHash = calculateHash(newItemsData);
-                    if (!visited.contains(newHash))
-                    {
-                      State down = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), calculatePath(curPlayer, new Pos(j,i-1)) + "d");
-                      states.add(down);
-                    }
-                    else
-                    {
-                      System.out.println("State already visited!");
-                    }
-
-                  }
-
-                  //@$. go right
-                  if(reach.getTiles()[i][j-1] == reach.getStamp() && curItemsData[i][j+1] == ' ')
-                  {
-                    char[][] newItemsData = Arrays.stream(curItemsData).map(char[]::clone).toArray(char[][]::new); //copy current items data
-                    newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
-                    newItemsData[i][j] = '@';
-                    newItemsData[i][j+1] = '$';
-
-                    long newHash = calculateHash(newItemsData);
-                    if (!visited.contains(newHash))
-                    {
-                      State right = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), calculatePath(curPlayer, new Pos(j-1,i)) + "r");
-                      states.add(right);
-                    }
-                    else
-                    {
-                      System.out.println("State already visited!");
-                    }
-
-
-                  }
-
-                  //.$@ go left
-                  if(reach.getTiles()[i][j+1] == reach.getStamp() && curItemsData[i][j-1] == ' ')
-                  {
-                    char[][] newItemsData = Arrays.stream(curItemsData).map(char[]::clone).toArray(char[][]::new); //copy current items data
-                    newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
-                    newItemsData[i][j] = '@';
-                    newItemsData[i][j-1] = '$';
-
-                    long newHash = calculateHash(newItemsData);
-                    if (!visited.contains(newHash))
-                    {
-                      State left = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), calculatePath(curPlayer, new Pos(j+1, i)) + "l");
-                      states.add(left);
-                    }
-                    else
-                    {
-                      System.out.println("State already visited!");
-                    }
-
-                  }
-                }
-              }
-            }
+            if (reach.getTiles()[i][j] == Integer.MAX_VALUE)
+              System.out.print("+");
+            else
+              System.out.print(reach.getTiles()[i][j]);
           }
-          visited.add(current.getHash());
+          System.out.println();
         }
-    }
 
+    return calculatePath(player, new Pos(1, 1));
 
-
-
-    return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
+//    while (!states.isEmpty())
+//    {
+//
+//        current = states.poll();
+//        char[][] curItemsData = current.getItemsData();
+//        Pos curPlayer = current.getPlayer();
+//        calculateReach(curPlayer, curItemsData);
+//
+//        for (int i = 0; i < height; i++)
+//        {
+//          for (int j = 0; j < width; j++)
+//          {
+//            if (curItemsData[i][j] == ' ')
+//              System.out.print(mapData[i][j]);
+//            else System.out.print(curItemsData[i][j]);
+//          }
+//          System.out.println();
+//        }
+//
+//        if (isSolved(current))
+//        {
+//          System.out.println("We are done!");
+//          return current.getPath();
+//        }
+//        else
+//        {
+//          for (int i = 0; i < height; i++)
+//          {
+//            for (int j = 0; j < width; j++)
+//            {
+//              if (curItemsData[i][j] == '$') //check if box
+//              {
+//                if (reach.getTiles()[i][j] == reach.getStamp() + 1) //check if box is reachable
+//                {
+//
+//                  //.
+//                  //$
+//                  //@ go up
+//                  System.out.println("Checking up!");
+//                  if(reach.getTiles()[i+1][j] == reach.getStamp() && mapData[i-1][j] != '#' && curItemsData[i-1][j] != '$')
+//                  {
+//                    System.out.println("Up valid!");
+//                    char[][] newItemsData = Arrays.stream(curItemsData).map(char[]::clone).toArray(char[][]::new); //copy current items data
+//                    newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
+//                    newItemsData[i][j] = '@'; //replace with player
+//                    newItemsData[i - 1][j] = '$'; //move box
+//
+//                    long newHash = calculateHash(newItemsData);
+//                    if (!visited.contains(newHash))
+//                    {
+//                      State up = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), current.getPath() + calculatePath(curPlayer, new Pos(j,i+1)) + "u");
+//                      states.add(up);
+//                    }
+//                    else
+//                    {
+//                      System.out.println("Up already visited!");
+//                    }
+//
+//                  }
+//
+//                  //@
+//                  //$
+//                  //. go down
+//                  System.out.println("Checking down!");
+//                  if(reach.getTiles()[i-1][j] == reach.getStamp() && mapData[i+1][j] != '#' && curItemsData[i+1][j] != '$')
+//                  {
+//                    System.out.println("Down valid!");
+//                    char[][] newItemsData = Arrays.stream(curItemsData).map(char[]::clone).toArray(char[][]::new); //copy current items data
+//                    newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
+//                    newItemsData[i][j] = '@';
+//                    newItemsData[i+1][j] = '$';
+//
+//                    long newHash = calculateHash(newItemsData);
+//                    if (!visited.contains(newHash))
+//                    {
+//                      State down = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), current.getPath() + calculatePath(curPlayer, new Pos(j,i-1)) + "d");
+//                      states.add(down);
+//                    }
+//                    else
+//                    {
+//                      System.out.println("Down already visited!");
+//                    }
+//
+//                  }
+//
+//                  //@$. go right
+//                  System.out.println("Checking right!");
+//                  if(reach.getTiles()[i][j-1] == reach.getStamp() && mapData[i][j+1] != '#' && curItemsData[i][j+1] != '$')
+//                  {
+//                    System.out.println("Right valid!");
+//                    char[][] newItemsData = Arrays.stream(curItemsData).map(char[]::clone).toArray(char[][]::new); //copy current items data
+//                    newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
+//                    newItemsData[i][j] = '@';
+//                    newItemsData[i][j+1] = '$';
+//
+//                    long newHash = calculateHash(newItemsData);
+//                    if (!visited.contains(newHash))
+//                    {
+//                      State right = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), current.getPath() + calculatePath(curPlayer, new Pos(j-1,i)) + "r");
+//                      states.add(right);
+//                    }
+//                    else
+//                    {
+//                      System.out.println("Right already visited!");
+//                    }
+//
+//                  }
+//
+//                  //.$@ go left
+//                  System.out.println("Checking left!");
+//                  if(reach.getTiles()[i][j+1] == reach.getStamp() && mapData[i][j-1] != '#' && curItemsData[i][j-1] != '$')
+//                  {
+//                    System.out.println("Left valid!");
+//                    char[][] newItemsData = Arrays.stream(curItemsData).map(char[]::clone).toArray(char[][]::new); //copy current items data
+//                    newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
+//                    newItemsData[i][j] = '@';
+//                    newItemsData[i][j-1] = '$';
+//
+//                    long newHash = calculateHash(newItemsData);
+//                    if (!visited.contains(newHash))
+//                    {
+//                      State left = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), current.getPath() + calculatePath(curPlayer, new Pos(j+1, i)) + "l");
+//                      states.add(left);
+//                    }
+//                    else
+//                    {
+//                      System.out.println("Left already visited!");
+//                    }
+//
+//                  }
+//                }
+//              }
+//            }
+//          }
+//          visited.add(current.getHash());
+//        }
+//    }
+//
+//    System.out.println("We are not done!");
+//
+//    return "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr";
   }
 
 }
