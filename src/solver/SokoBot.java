@@ -13,6 +13,7 @@ public class SokoBot
   private State current;
   private final ArrayList<Pos> goals;
   private final long[][][] zobristTable;
+  private boolean[][] deadTiles;
 
   //private final Comparator<Pos> posComparator;
 
@@ -65,6 +66,8 @@ public class SokoBot
         }
       }
     }
+
+    deadTiles = getDeadTiles();
 
   }
   public boolean isSolved(State toCheck)
@@ -188,6 +191,197 @@ public class SokoBot
 
     }
 
+  }
+
+  public boolean isPullValid(Pos pos, int dir) {
+
+    if(dir == 0) {
+      if(mapData[pos.y() - 1][pos.x()] == '#')
+        return false;
+      else if(mapData[pos.y() - 2][pos.x()] == '#')
+        return false;
+    }
+    if(dir == 1) {
+      if(mapData[pos.y() + 1][pos.x()] == '#')
+        return false;
+      else if(mapData[pos.y() + 2][pos.x()] == '#')
+        return false;
+    }
+    if(dir == 2) {
+      if(mapData[pos.y()][pos.x() - 1] == '#')
+        return false;
+      else if(mapData[pos.y()][pos.x() - 2] == '#')
+        return false;
+    }
+    if(dir == 3) {
+      if (mapData[pos.y()][pos.x() + 1] == '#')
+        return false;
+      else if (mapData[pos.y()][pos.x() + 2] == '#')
+        return false;
+    }
+
+    return true;
+  }
+
+  public boolean[][] getDeadTiles() {
+    boolean[][] deadTiles = new boolean[height][width];
+    Arrays.stream(deadTiles).forEach(row->Arrays.fill(row,true));
+
+    for(Pos goalPos : goals) {
+      Queue<Pos> toCheck = new LinkedList<>();
+      HashSet<Pos> visited = new HashSet<>();
+      Pos curPos = goalPos;
+
+      toCheck.offer(curPos);
+
+      do {
+
+        curPos = toCheck.poll();
+
+        if(!visited.contains(curPos)) {
+          visited.add(curPos);
+
+          Pos newPos;
+
+          newPos = new Pos(curPos.x(), curPos.y() - 1);
+          if(isPullValid(curPos, 0)) {
+            toCheck.offer(newPos);
+            deadTiles[newPos.y()][newPos.x()] = false;
+          }
+
+          newPos = new Pos(curPos.x(), curPos.y() + 1);
+          if(isPullValid(curPos, 1)) {
+            toCheck.offer(newPos);
+            deadTiles[newPos.y()][newPos.x()] = false;
+          }
+
+          newPos = new Pos(curPos.x() - 1, curPos.y());
+          if(isPullValid(curPos, 2)) {
+            toCheck.offer(newPos);
+            deadTiles[newPos.y()][newPos.x()] = false;
+          }
+
+          newPos = new Pos(curPos.x() + 1, curPos.y());
+          if(isPullValid(curPos, 3)) {
+            toCheck.offer(newPos);
+            deadTiles[newPos.y()][newPos.x()] = false;
+          }
+        }
+
+      } while (!toCheck.isEmpty());
+    }
+
+
+    for (Pos goalPos: goals) {
+      deadTiles[goalPos.y()][goalPos.x()] = false;
+    }
+
+
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        if(deadTiles[i][j])
+          System.out.print(".");
+        else System.out.print("O");
+      }
+      System.out.println();
+    }
+
+
+
+    return deadTiles;
+  }
+
+    // please top me
+//  public boolean isTopping(Topping topping) {
+//    if((Topping)topping typeof Topping) {
+//      return (Topping)topping typeof Topping;
+//    }
+//  }
+
+    // i think this should work na i hope to god
+    // bro, the walls are in MAP DATA GODDAMN not fucking nextitemsdata, omg bro like three hours wasted
+    public boolean isBlocked(char[][] nextItemsData, Pos box)
+    {
+
+      boolean blockedX = false;
+      boolean blockedY = false;
+
+      // the hack kekw
+      char[][] replaceWithWall = Arrays.stream(nextItemsData).map(char[]::clone).toArray(char[][]::new);
+      replaceWithWall[box.y()][box.x()] = 'W';
+
+      // medyo hacky pero this treats the new crate as a wall
+      if (mapData[box.y()-1][box.x()] == '#' || mapData[box.y()+1][box.x()] == '#' || nextItemsData[box.y()-1][box.x()] == 'W' || nextItemsData[box.y()+1][box.x()] == 'W')
+      {
+        blockedY = true;
+      }
+      else if (nextItemsData[box.y()-1][box.x()] == '$')
+      {
+
+        blockedY = isBlocked(replaceWithWall, new Pos(box.x(),box.y()-1)); // TRY IT AGAIN BITCH
+      }
+
+      else if (nextItemsData[box.y() + 1][box.x()] == '$')
+      {
+        blockedY = isBlocked(replaceWithWall, new Pos(box.x(),box.y()+1));
+      }
+
+      if (mapData[box.y()][box.x()-1] == '#' || mapData[box.y()][box.x()+1] == '#' || nextItemsData[box.y()][box.x()-1] == 'W' || nextItemsData[box.y()][box.x()+1] == 'W')
+      {
+        blockedX = true;
+      }
+
+      else if (nextItemsData[box.y()][box.x()-1] == '$')
+      {
+        blockedX = isBlocked(replaceWithWall, new Pos(box.x()-1, box.y()));
+      }
+
+      // i'm actually talking to my ex sa dc, goddamn ikr // that's why nandito pa rin ako rn like damn
+      // BROOOOOO
+      //
+      // oh shit ur still here pala HAHAHAHA, i understand the algorithm na pala from the website, im trying to trace ur code rn
+      else if (nextItemsData[box.y()][box.x() + 1] == '$')
+      {
+        blockedX = isBlocked(replaceWithWall, new Pos(box.x()+1, box.y()));
+      }
+
+//                       _oo0oo_
+//                      o8888888o
+//                      88" . "88
+//                      (| -_- |)
+//                      0\  =  /0
+//                    ___/`---'\___
+//                  .' \\|     |// '.
+//                 / \\|||  :  |||// \
+//                / _||||| -:- |||||- \
+//               |   | \\\  -  /// |   |
+//               | \_|  ''\---/''  |_/ |
+//               \  .-\__  '-'  ___/-. /
+//             ___'. .'  /--.--\  `. .'___
+//          ."" '<  `.___\_<|>_/___.' >' "".
+//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+//         \  \ `_.   \_ __\ /__ _/   .-` /  /
+//     =====`-.____`.___ \_____/___.-`___.-'=====
+//                       `=---='
+//
+//
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//               Tiam-Lee bless you         永无BUG cum on my face
+      return blockedX && blockedY;
+
+    }
+
+  public boolean isSolvable(char[][] nextItemsData, Pos movedBox)
+  {
+
+      if (isBlocked(nextItemsData, movedBox))
+      {
+//          System.out.println("is Deadlock?: " + !(mapData[movedBox[1]][movedBox[0]] == '.'));
+        return mapData[movedBox.y()][movedBox.x()] == '.';
+      }
+
+    return true;
   }
   //Calculates the hash of the current state;
   public long calculateHash(char[][] itemsData)
