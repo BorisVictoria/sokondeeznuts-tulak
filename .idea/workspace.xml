@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="79e369c2-80f9-4db8-88d9-2c0acbd45186" name="Changes" comment="Removed position of boxes in state">
-      <change afterPath="$PROJECT_DIR$/src/solver/Path.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="79e369c2-80f9-4db8-88d9-2c0acbd45186" name="Changes" comment="it's joever">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/solver/Reach.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/solver/Reach.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/solver/Pos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/solver/Pos.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/solver/SokoBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/solver/SokoBot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/solver/State.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/solver/State.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/solver/Tile.java" beforeDir="false" />
+    </list>
+    <list id="75b33f22-6182-424f-b24a-5bef9bc8cfa7" name="Changes by ASUS" comment="">
+      <change beforePath="$PROJECT_DIR$/src/solver/SokoBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/solver/SokoBot.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +27,31 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/solver/SokoBot.java" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/src/solver/SokoBot.java">
+      <ranges>
+        <range start1="15" end1="15" start2="15" end2="16" changelist="75b33f22-6182-424f-b24a-5bef9bc8cfa7" />
+        <range start1="67" end1="67" start2="68" end2="70" changelist="75b33f22-6182-424f-b24a-5bef9bc8cfa7" />
+        <range start1="105" end1="106" start2="108" end2="109" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+        <range start1="191" end1="191" start2="194" end2="385" changelist="75b33f22-6182-424f-b24a-5bef9bc8cfa7" />
+        <range start1="241" end1="242" start2="435" end2="436" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+        <range start1="245" end1="246" start2="439" end2="440" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+        <range start1="254" end1="254" start2="448" end2="449" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+        <range start1="255" end1="256" start2="450" end2="451" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+        <range start1="267" end1="268" start2="462" end2="463" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+        <range start1="276" end1="277" start2="471" end2="472" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+        <range start1="285" end1="286" start2="480" end2="481" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+        <range start1="294" end1="295" start2="489" end2="490" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+        <range start1="298" end1="299" start2="493" end2="494" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+        <range start1="313" end1="336" start2="508" end2="509" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+        <range start1="340" end1="465" start2="513" end2="520" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+        <range start1="466" end1="469" start2="521" end2="682" changelist="79e369c2-80f9-4db8-88d9-2c0acbd45186" />
+      </ranges>
+    </file>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -37,19 +61,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "master",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -61,7 +86,8 @@
       <workItem from="1697162794643" duration="12944000" />
       <workItem from="1697225943890" duration="1552000" />
       <workItem from="1697293332273" duration="11843000" />
-      <workItem from="1697349888051" duration="14146000" />
+      <workItem from="1697349888051" duration="19284000" />
+      <workItem from="1697370711892" duration="15785000" />
     </task>
     <task id="LOCAL-00001" summary="Begin push-optimal refactoring">
       <option name="closed" value="true" />
@@ -87,7 +113,23 @@
       <option name="project" value="LOCAL" />
       <updated>1697227731810</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="okie it's bugged">
+      <option name="closed" value="true" />
+      <created>1697365742846</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1697365742846</updated>
+    </task>
+    <task id="LOCAL-00005" summary="it's joever">
+      <option name="closed" value="true" />
+      <created>1697375388508</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1697375388508</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -97,6 +139,8 @@
     <MESSAGE value="Begin push-optimal refactoring" />
     <MESSAGE value="Add possible records needed for push-optimal solution" />
     <MESSAGE value="Removed position of boxes in state" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed position of boxes in state" />
+    <MESSAGE value="okie it's bugged" />
+    <MESSAGE value="it's joever" />
+    <option name="LAST_COMMIT_MESSAGE" value="it's joever" />
   </component>
 </project>
