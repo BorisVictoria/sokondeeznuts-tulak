@@ -10,8 +10,4 @@ public record Pos(int x, int y)
         return x == pos2.x() && y == pos2.y();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(x,y);
-    }
 }

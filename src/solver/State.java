@@ -1,6 +1,8 @@
 package solver;
 
 public class State {
+
+
     private Pos player;
     private char[][] itemsData;
     private long hash;
@@ -20,6 +22,9 @@ public class State {
     public Pos getPlayer()
     {
         return player;
+    }
+    public void setPlayer(Pos player) {
+        this.player = player;
     }
     public char[][] getItemsData()
     {

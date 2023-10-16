@@ -111,7 +111,7 @@ public class SokoBot
 
     //Initialization
     reach.setStamp(reach.getStamp()+2);
-    reach.setMin(start);
+    //reach.setMin(start);
     int[][] tiles = reach.getTiles();
     int stamp = reach.getStamp();
     tiles[start.y()][start.x()] = stamp;
@@ -307,8 +307,7 @@ public class SokoBot
       boolean blockedY = false;
 
       // the hack kekw
-      char[][] replaceWithWall = Arrays.stream(nextItemsData).map(char[]::clone).toArray(char[][]::new);
-      replaceWithWall[box.y()][box.x()] = 'W';
+      nextItemsData[box.y()][box.x()] = 'W';
 
       // medyo hacky pero this treats the new crate as a wall
       if (mapData[box.y()-1][box.x()] == '#' || mapData[box.y()+1][box.x()] == '#' || nextItemsData[box.y()-1][box.x()] == 'W' || nextItemsData[box.y()+1][box.x()] == 'W')
@@ -318,12 +317,12 @@ public class SokoBot
       else if (nextItemsData[box.y()-1][box.x()] == '$')
       {
 
-        blockedY = isBlocked(replaceWithWall, new Pos(box.x(),box.y()-1)); // TRY IT AGAIN BITCH
+        blockedY = isBlocked(nextItemsData, new Pos(box.x(),box.y()-1)); // TRY IT AGAIN BITCH
       }
 
       else if (nextItemsData[box.y() + 1][box.x()] == '$')
       {
-        blockedY = isBlocked(replaceWithWall, new Pos(box.x(),box.y()+1));
+        blockedY = isBlocked(nextItemsData, new Pos(box.x(),box.y()+1));
       }
 
       if (mapData[box.y()][box.x()-1] == '#' || mapData[box.y()][box.x()+1] == '#' || nextItemsData[box.y()][box.x()-1] == 'W' || nextItemsData[box.y()][box.x()+1] == 'W')
@@ -333,7 +332,7 @@ public class SokoBot
 
       else if (nextItemsData[box.y()][box.x()-1] == '$')
       {
-        blockedX = isBlocked(replaceWithWall, new Pos(box.x()-1, box.y()));
+        blockedX = isBlocked(nextItemsData, new Pos(box.x()-1, box.y()));
       }
 
       // i'm actually talking to my ex sa dc, goddamn ikr // that's why nandito pa rin ako rn like damn
@@ -342,7 +341,7 @@ public class SokoBot
       // oh shit ur still here pala HAHAHAHA, i understand the algorithm na pala from the website, im trying to trace ur code rn
       else if (nextItemsData[box.y()][box.x() + 1] == '$')
       {
-        blockedX = isBlocked(replaceWithWall, new Pos(box.x()+1, box.y()));
+        blockedX = isBlocked(nextItemsData, new Pos(box.x()+1, box.y()));
       }
 
 //                       _oo0oo_
@@ -407,22 +406,62 @@ public class SokoBot
 
   public int calculateHeuristic(char[][] itemsData)
   {
+//    int heuristic = 0;
+//    int min;
+//    for(int i = 0; i < height; i++)
+//    {
+//      for(int j = 0; j < width; j++)
+//      {
+//        if(itemsData[i][j] == '$')
+//        {
+//          min = 999;
+//          for(int k = 0; k < goals.size(); k++)
+//          {
+//            int dist = Math.abs(j - goals.get(k).x()) + Math.abs(i - goals.get(k).y());
+//            if(dist < min)
+//              min = dist;
+//          }
+//          heuristic += min;
+//        }
+//      }
+//    }
+//    return heuristic;
+
     int heuristic = 0;
-    int min;
-    for(int i = 0; i < height; i++)
+    ArrayList<ArrayList<Box>> distances = new ArrayList<ArrayList<Box>>();
+    Comparator<Box> comp = Comparator.comparing(Box::dist);
+    for (int i = 0; i < goals.size(); i++)
     {
-      for(int j = 0; j < width; j++)
-      {
-        if(itemsData[i][j] == '$')
-        {
-          min = 999;
-          for(int k = 0; k < goals.size(); k++)
-          {
+      distances.add(new ArrayList<Box>());
+    }
+
+    for(int i = 0; i < height; i++) {
+      for(int j = 0; j < width; j++) {
+        if(itemsData[i][j] == '$') {
+          for(int k = 0; k < goals.size(); k++) {
             int dist = Math.abs(j - goals.get(k).x()) + Math.abs(i - goals.get(k).y());
-            if(dist < min)
-              min = dist;
+            distances.get(k).add(new Box(k, dist));
           }
-          heuristic += min;
+        }
+      }
+    }
+
+    distances.forEach(list-> list.sort(comp));
+
+    for (int i = 0; i < distances.size(); i++)
+    {
+      heuristic += distances.get(i).get(0).dist();
+      int goal = distances.get(i).get(0).goal();
+      distances.remove(i);
+      for (int j = 0; j < distances.size(); j++)
+      {
+        for (int k = 0; k < distances.size(); k++)
+        {
+          if (distances.get(j).get(k).goal() == goal)
+          {
+            distances.get(j).remove(k);
+            k = distances.size();
+          }
         }
       }
     }
@@ -518,7 +557,7 @@ public class SokoBot
 //          }
 //          System.out.println();
 //        }
-//
+
 //    return calculatePath(player, new Pos(1, 1));
 
     int nodes = 0;
@@ -570,7 +609,8 @@ public class SokoBot
                     newItemsData[i][j] = '@'; //replace with player
                     newItemsData[i - 1][j] = '$'; //move box
 
-                    if (isSolvable(newItemsData, new Pos(j, i-1)))
+                    char[][] check = Arrays.stream(newItemsData).map(char[]::clone).toArray(char[][]::new);
+                    if (isSolvable(check, new Pos(j, i-1)))
                     {
                       long newHash = calculateHash(newItemsData);
                       if (!visited.contains(newHash))
@@ -578,10 +618,10 @@ public class SokoBot
                         State up = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), current.getPath() + calculatePath(curPlayer, new Pos(j,i+1)) + "u");
                         states.offer(up);
                       }
-                    else
-                    {
-                      System.out.println("Up already visited!");
-                    }
+//                    else
+//                    {
+//                      System.out.println("Up already visited!");
+//                    }
 
                     }
                   }
@@ -599,7 +639,8 @@ public class SokoBot
                     newItemsData[i][j] = '@';
                     newItemsData[i+1][j] = '$';
 
-                    if (isSolvable(newItemsData, new Pos(j, i+1)))
+                    char[][] check = Arrays.stream(newItemsData).map(char[]::clone).toArray(char[][]::new);
+                    if (isSolvable(check, new Pos(j, i+1)))
                     {
                       long newHash = calculateHash(newItemsData);
                       if (!visited.contains(newHash))
@@ -607,10 +648,10 @@ public class SokoBot
                         State down = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), current.getPath() + calculatePath(curPlayer, new Pos(j,i-1)) + "d");
                         states.offer(down);
                       }
-                    else
-                    {
-                      System.out.println("Down already visited!");
-                    }
+//                    else
+//                    {
+//                      System.out.println("Down already visited!");
+//                    }
                     }
 
                   }
@@ -624,8 +665,9 @@ public class SokoBot
                     newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
                     newItemsData[i][j] = '@';
                     newItemsData[i][j+1] = '$';
-                    
-                    if (isSolvable(newItemsData, new Pos(j+1, i)))
+
+                    char[][] check = Arrays.stream(newItemsData).map(char[]::clone).toArray(char[][]::new);
+                    if (isSolvable(check, new Pos(j+1, i)))
                     {
                       long newHash = calculateHash(newItemsData);
                       if (!visited.contains(newHash))
@@ -633,10 +675,10 @@ public class SokoBot
                         State right = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), current.getPath() + calculatePath(curPlayer, new Pos(j-1,i)) + "r");
                         states.offer(right);
                       }
-                      else
-                      {
-                       System.out.println("Right already visited!");
-                      }
+//                      else
+//                      {
+//                       System.out.println("Right already visited!");
+//                      }
                     }
 
 
@@ -652,7 +694,8 @@ public class SokoBot
                     newItemsData[i][j] = '@';
                     newItemsData[i][j-1] = '$';
 
-                    if (isSolvable(newItemsData, new Pos(j-1, i)))
+                    char[][] check = Arrays.stream(newItemsData).map(char[]::clone).toArray(char[][]::new);
+                    if (isSolvable(check, new Pos(j-1, i)))
                     {
                       long newHash = calculateHash(newItemsData);
                       if (!visited.contains(newHash))
@@ -660,10 +703,10 @@ public class SokoBot
                         State left = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), current.getPath() + calculatePath(curPlayer, new Pos(j+1, i)) + "l");
                         states.offer(left);
                       }
-                    else
-                    {
-                      System.out.println("Left already visited!");
-                    }
+//                    else
+//                    {
+//                      System.out.println("Left already visited!");
+//                    }
                     }
 
                   }
