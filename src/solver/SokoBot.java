@@ -1,3 +1,26 @@
+//                       _oo0oo_
+//                      o8888888o
+//                      88" . "88
+//                      (| -_- |)
+//                      0\  =  /0
+//                    ___/`---'\___
+//                  .' \\|     |// '.
+//                 / \\|||  :  |||// \
+//                / _||||| -:- |||||- \
+//               |   | \\\  -  /// |   |
+//               | \_|  ''\---/''  |_/ |
+//               \  .-\__  '-'  ___/-. /
+//             ___'. .'  /--.--\  `. .'___
+//          ."" '<  `.___\_<|>_/___.' >' "".
+//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+//         \  \ `_.   \_ __\ /__ _/   .-` /  /
+//     =====`-.____`.___ \_____/___.-`___.-'=====
+//                       `=---='
+//
+//
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 package solver;
 
 import java.util.*;
@@ -14,8 +37,6 @@ public class SokoBot
   private final ArrayList<Pos> goals;
   private final long[][][] zobristTable;
   private boolean[][] deadTiles;
-
-  //private final Comparator<Pos> posComparator;
 
   public SokoBot(int width, int height, char[][] mapData, char[][] itemsData)
   {
@@ -111,7 +132,6 @@ public class SokoBot
 
     //Initialization
     reach.setStamp(reach.getStamp()+2);
-    //reach.setMin(start);
     int[][] tiles = reach.getTiles();
     int stamp = reach.getStamp();
     tiles[start.y()][start.x()] = stamp;
@@ -291,85 +311,48 @@ public class SokoBot
     return deadTiles;
   }
 
-    // please top me
-//  public boolean isTopping(Topping topping) {
-//    if((Topping)topping typeof Topping) {
-//      return (Topping)topping typeof Topping;
-//    }
-//  }
+  public boolean isBlocked(char[][] nextItemsData, Pos box)
+  {
 
-    // i think this should work na i hope to god
-    // bro, the walls are in MAP DATA GODDAMN not fucking nextitemsdata, omg bro like three hours wasted
-    public boolean isBlocked(char[][] nextItemsData, Pos box)
+    boolean blockedX = false;
+    boolean blockedY = false;
+
+    // the hack
+    nextItemsData[box.y()][box.x()] = 'W';
+
+    // medyo hacky pero this treats the new crate as a wall
+    if (mapData[box.y()-1][box.x()] == '#' || mapData[box.y()+1][box.x()] == '#' || nextItemsData[box.y()-1][box.x()] == 'W' || nextItemsData[box.y()+1][box.x()] == 'W')
+    {
+      blockedY = true;
+    }
+    else if (nextItemsData[box.y()-1][box.x()] == '$')
     {
 
-      boolean blockedX = false;
-      boolean blockedY = false;
-
-      // the hack kekw
-      nextItemsData[box.y()][box.x()] = 'W';
-
-      // medyo hacky pero this treats the new crate as a wall
-      if (mapData[box.y()-1][box.x()] == '#' || mapData[box.y()+1][box.x()] == '#' || nextItemsData[box.y()-1][box.x()] == 'W' || nextItemsData[box.y()+1][box.x()] == 'W')
-      {
-        blockedY = true;
-      }
-      else if (nextItemsData[box.y()-1][box.x()] == '$')
-      {
-
-        blockedY = isBlocked(nextItemsData, new Pos(box.x(),box.y()-1)); // TRY IT AGAIN BITCH
-      }
-
-      else if (nextItemsData[box.y() + 1][box.x()] == '$')
-      {
-        blockedY = isBlocked(nextItemsData, new Pos(box.x(),box.y()+1));
-      }
-
-      if (mapData[box.y()][box.x()-1] == '#' || mapData[box.y()][box.x()+1] == '#' || nextItemsData[box.y()][box.x()-1] == 'W' || nextItemsData[box.y()][box.x()+1] == 'W')
-      {
-        blockedX = true;
-      }
-
-      else if (nextItemsData[box.y()][box.x()-1] == '$')
-      {
-        blockedX = isBlocked(nextItemsData, new Pos(box.x()-1, box.y()));
-      }
-
-      // i'm actually talking to my ex sa dc, goddamn ikr // that's why nandito pa rin ako rn like damn
-      // BROOOOOO
-      //
-      // oh shit ur still here pala HAHAHAHA, i understand the algorithm na pala from the website, im trying to trace ur code rn
-      else if (nextItemsData[box.y()][box.x() + 1] == '$')
-      {
-        blockedX = isBlocked(nextItemsData, new Pos(box.x()+1, box.y()));
-      }
-
-//                       _oo0oo_
-//                      o8888888o
-//                      88" . "88
-//                      (| -_- |)
-//                      0\  =  /0
-//                    ___/`---'\___
-//                  .' \\|     |// '.
-//                 / \\|||  :  |||// \
-//                / _||||| -:- |||||- \
-//               |   | \\\  -  /// |   |
-//               | \_|  ''\---/''  |_/ |
-//               \  .-\__  '-'  ___/-. /
-//             ___'. .'  /--.--\  `. .'___
-//          ."" '<  `.___\_<|>_/___.' >' "".
-//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
-//         \  \ `_.   \_ __\ /__ _/   .-` /  /
-//     =====`-.____`.___ \_____/___.-`___.-'=====
-//                       `=---='
-//
-//
-//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-//               Tiam-Lee bless you         永无BUG cum on my face
-      return blockedX && blockedY;
-
+      blockedY = isBlocked(nextItemsData, new Pos(box.x(),box.y()-1)); // TRY IT AGAIN
     }
+
+    else if (nextItemsData[box.y() + 1][box.x()] == '$')
+    {
+      blockedY = isBlocked(nextItemsData, new Pos(box.x(),box.y()+1));
+    }
+
+    if (mapData[box.y()][box.x()-1] == '#' || mapData[box.y()][box.x()+1] == '#' || nextItemsData[box.y()][box.x()-1] == 'W' || nextItemsData[box.y()][box.x()+1] == 'W')
+    {
+      blockedX = true;
+    }
+
+    else if (nextItemsData[box.y()][box.x()-1] == '$')
+    {
+      blockedX = isBlocked(nextItemsData, new Pos(box.x()-1, box.y()));
+    }
+    else if (nextItemsData[box.y()][box.x() + 1] == '$')
+    {
+      blockedX = isBlocked(nextItemsData, new Pos(box.x()+1, box.y()));
+    }
+
+    return blockedX && blockedY;
+
+  }
 
   public boolean isSolvable(char[][] nextItemsData, Pos movedBox)
   {
@@ -485,7 +468,6 @@ public class SokoBot
     while (!queue.isEmpty())
     {
       Path current = queue.poll();
-      //System.out.println(current.path());
 
       if (current.pos().x() == dest.x() && current.pos().y() == dest.y())
       {
@@ -545,21 +527,6 @@ public class SokoBot
     HashSet<Long> visited = new HashSet<Long>();
     states.offer(start);
 
-//    calculateReach(player, itemsData);
-//        for (int i = 0; i < height; i++)
-//        {
-//          for (int j = 0; j < width; j++)
-//          {
-//            if (reach.getTiles()[i][j] == Integer.MAX_VALUE)
-//              System.out.print("+");
-//            else
-//              System.out.print(reach.getTiles()[i][j]);
-//          }
-//          System.out.println();
-//        }
-
-//    return calculatePath(player, new Pos(1, 1));
-
     int nodes = 0;
     while (!states.isEmpty())
     {
@@ -568,17 +535,6 @@ public class SokoBot
         char[][] curItemsData = current.getItemsData();
         Pos curPlayer = current.getPlayer();
         calculateReach(curPlayer, curItemsData);
-
-//        for (int i = 0; i < height; i++)
-//        {
-//          for (int j = 0; j < width; j++)
-//          {
-//            if (curItemsData[i][j] == ' ')
-//              System.out.print(mapData[i][j]);
-//            else System.out.print(curItemsData[i][j]);
-//          }
-//          System.out.println();
-//        }
 
         if (isSolved(current))
         {
@@ -596,14 +552,8 @@ public class SokoBot
               {
                 if (reach.getTiles()[i][j] == reach.getStamp() + 1) //check if box is reachable
                 {
-
-                  //.
-                  //$
-                  //@ go up
-                  //System.out.println("Checking up!");
                   if(reach.getTiles()[i+1][j] == reach.getStamp() && mapData[i-1][j] != '#' && curItemsData[i-1][j] != '$' && !deadTiles[i-1][j])
                   {
-                    //System.out.println("Up valid!");
                     char[][] newItemsData = Arrays.stream(curItemsData).map(char[]::clone).toArray(char[][]::new); //copy current items data
                     newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
                     newItemsData[i][j] = '@'; //replace with player
@@ -618,22 +568,11 @@ public class SokoBot
                         State up = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), current.getPath() + calculatePath(curPlayer, new Pos(j,i+1)) + "u");
                         states.offer(up);
                       }
-//                    else
-//                    {
-//                      System.out.println("Up already visited!");
-//                    }
-
                     }
                   }
 
-
-                  //@
-                  //$
-                  //. go down
-                  //System.out.println("Checking down!");
                   if(reach.getTiles()[i-1][j] == reach.getStamp() && mapData[i+1][j] != '#' && curItemsData[i+1][j] != '$' && !deadTiles[i+1][j])
                   {
-                    //System.out.println("Down valid!");
                     char[][] newItemsData = Arrays.stream(curItemsData).map(char[]::clone).toArray(char[][]::new); //copy current items data
                     newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
                     newItemsData[i][j] = '@';
@@ -648,19 +587,11 @@ public class SokoBot
                         State down = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), current.getPath() + calculatePath(curPlayer, new Pos(j,i-1)) + "d");
                         states.offer(down);
                       }
-//                    else
-//                    {
-//                      System.out.println("Down already visited!");
-//                    }
                     }
 
                   }
-
-                  //@$. go right
-                  //System.out.println("Checking right!");
                   if(reach.getTiles()[i][j-1] == reach.getStamp() && mapData[i][j+1] != '#' && curItemsData[i][j+1] != '$' && !deadTiles[i][j+1])
                   {
-                    //System.out.println("Right valid!");
                     char[][] newItemsData = Arrays.stream(curItemsData).map(char[]::clone).toArray(char[][]::new); //copy current items data
                     newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
                     newItemsData[i][j] = '@';
@@ -675,20 +606,10 @@ public class SokoBot
                         State right = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), current.getPath() + calculatePath(curPlayer, new Pos(j-1,i)) + "r");
                         states.offer(right);
                       }
-//                      else
-//                      {
-//                       System.out.println("Right already visited!");
-//                      }
                     }
-
-
                   }
-
-                  //.$@ go left
-                  ////System.out.println("Checking left!");
                   if(reach.getTiles()[i][j+1] == reach.getStamp() && mapData[i][j-1] != '#' && curItemsData[i][j-1] != '$' && !deadTiles[i][j-1])
                   {
-                    //System.out.println("Left valid!");
                     char[][] newItemsData = Arrays.stream(curItemsData).map(char[]::clone).toArray(char[][]::new); //copy current items data
                     newItemsData[curPlayer.y()][curPlayer.x()] = ' '; //clear player
                     newItemsData[i][j] = '@';
@@ -703,10 +624,6 @@ public class SokoBot
                         State left = new State(new Pos(j,i),newItemsData, calculateHash(newItemsData), calculateHeuristic(newItemsData), current.getPath() + calculatePath(curPlayer, new Pos(j+1, i)) + "l");
                         states.offer(left);
                       }
-//                    else
-//                    {
-//                      System.out.println("Left already visited!");
-//                    }
                     }
 
                   }
